@@ -163,10 +163,10 @@
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="vertShader.vs" />
+    <Content Include="vertShader.glsl" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="fragShader.fs" />
+    <Compile Include="fragShader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h" />
