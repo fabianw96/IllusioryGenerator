@@ -9,10 +9,11 @@
 #include "Shader.h"
 #include "stb_image.h"
 #include "TextureLoader.h"
+#include "World.h"
 
 //Settings
-constexpr unsigned int SCREEN_WIDTH = 2560;
-constexpr unsigned int SCREEN_HEIGHT = 1440;
+constexpr unsigned int SCREEN_WIDTH = 800;
+constexpr unsigned int SCREEN_HEIGHT = 600;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -28,6 +29,8 @@ ViewPortCamera viewPortCam(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = SCREEN_WIDTH / 2.0f;
 float lastY = SCREEN_HEIGHT / 2.0f;
 bool firstMouseInput = true;
+
+std::unique_ptr<World> world = std::make_unique<World>();
 
 int main(int argc, char* argv[])
 {
@@ -144,6 +147,7 @@ int main(int argc, char* argv[])
 	glGenTextures(1, &texture2);
 
 	TextureLoader::loadTexture("./awesomeface.png", texture2);
+	//TODO: material class
 
 	myShader.use();
 	myShader.setInt("texture1", 0);
@@ -157,6 +161,8 @@ int main(int argc, char* argv[])
 		float currentframe = static_cast<float>(glfwGetTime());
 		deltaTime = currentframe - lastFrameTime;
 		lastFrameTime = currentframe;
+
+		world->Update(deltaTime);
 
 		//input processing
 		processInput(window);
@@ -232,6 +238,9 @@ void processInput(GLFWwindow* window)
 	{
 		glfwSetCursorPosCallback(window, mouse_callback);
 	}
+
+	if(glfwGetKey(window, GLFW_KEY_I) == GLFW_REPEAT)
+		world->AddActor(new Actor("test", true));
 }
 
 void mouse_callback(GLFWwindow* window, double xPosIn, double yPosIn)
