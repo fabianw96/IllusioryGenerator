@@ -7,5 +7,5 @@
 class TextureLoader
 {
 public:
-	static void loadTexture(char const* file, unsigned int texture);
+	static void loadTexture(char const* file);
 };

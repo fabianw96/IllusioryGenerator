@@ -2,13 +2,20 @@
 #include <array>
 #include <vector>
 
+#include "Material.h"
 #include "SceneComponent.h"
 #include "Primitives.h"
 
 class MeshComponent : public SceneComponent
 {
 public:
-	void Render();
+	MeshComponent();
+	~MeshComponent();
+	void RenderMesh();
 private:
-	std::array<float, 180> verts = {};
+	// float verts[];
+	unsigned int VBO, VAO;
+	std::vector<float> verts;
+	//create a new Shader for each mesh
+	std::shared_ptr<Shader> shader = std::make_shared<Shader>("./vertShader.glsl", "./fragShader.glsl");
 };

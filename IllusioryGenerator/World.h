@@ -9,11 +9,10 @@ public:
 	World();
 	~World();
 
-	void AddActor(Actor* actor);
-	void DeleteActor(Actor* actor);
+	void AddActor(std::unique_ptr<Actor> actor);
+	void DeleteActor(std::unique_ptr<Actor> actor);
 	void Update(float deltaTime);
-
 private:
-	std::vector<Actor*> Actors;
+	std::vector<std::unique_ptr<Actor>> Actors;
 
 };

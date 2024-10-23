@@ -1,6 +1,7 @@
 ﻿#include "ViewPortCamera.h"
 
 #include <iostream>
+#include <glm/ext/matrix_clip_space.hpp>
 
 ViewPortCamera::ViewPortCamera(glm::vec3 position, glm::vec3 up, float yaw, float pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
 {
@@ -67,6 +68,19 @@ void ViewPortCamera::ProcessMouseScroll(float yOffset)
 		Zoom = 1.0f;
 	if (Zoom > 90.0f)
 		Zoom = 90.0f;
+}
+
+void ViewPortCamera::UpdateShaderMatrix(unsigned int screenWidth, unsigned int screenHeight)
+{
+	glm::mat4 projection = glm::perspective(glm::radians(Zoom), float(screenWidth) / float(screenHeight), 0.1f, 100.0f);
+	shader->use();
+	shader->setMat4("view", GetViewMatrix());
+	shader->setMat4("projection", projection);
+}
+
+void ViewPortCamera::SetShader(Shader* shaderProgram)
+{
+	shader = shaderProgram;
 }
 
 

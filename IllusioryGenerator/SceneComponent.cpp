@@ -13,6 +13,10 @@ void SceneComponent::Update(float deltaTime)
 {
 }
 
+void SceneComponent::Render()
+{
+}
+
 glm::vec3 SceneComponent::GetPosition() const
 {
 	return Position;

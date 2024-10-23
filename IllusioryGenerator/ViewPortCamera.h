@@ -2,7 +2,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
-
+#include "Shader.h"
 
 enum camera_movement
 {
@@ -42,9 +42,12 @@ public:
 
 	//return view matrix from euler angles and look at matrix
 	glm::mat4 GetViewMatrix() const;
-	void      ProcessKeyboardInput(camera_movement direction, float deltaTime);
-	void      ProcessMouseMovement(float xOffset, float yOffset, GLboolean constrain = true);
-	void      ProcessMouseScroll(float yOffset);
+	void ProcessKeyboardInput(camera_movement direction, float deltaTime);
+	void ProcessMouseMovement(float xOffset, float yOffset, GLboolean constrain = true);
+	void ProcessMouseScroll(float yOffset);
+	void UpdateShaderMatrix(unsigned int screenWidth, unsigned int screenHeight);
+	void SetShader(Shader* shaderProgram);
 private:
 	void updateCameraVectors();
+	Shader* shader;
 };

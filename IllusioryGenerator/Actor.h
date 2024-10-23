@@ -7,14 +7,14 @@
 class Actor
 {
 public:
-	Actor(const std::string& actorName, bool IsActive);
+	Actor(const int& m_ActorID, bool IsActive);
 	virtual ~Actor();
 
-	void AddComponent(SceneComponent* component);
+	void AddComponent(std::unique_ptr<SceneComponent> component);
 	virtual void Update(float deltaTime);
 
 protected:
-	std::vector<SceneComponent*> Components;
-	std::string m_ActorName;
+	std::vector<std::unique_ptr<SceneComponent>> Components;
+	int m_ActorID = 0;
 	bool m_IsActive = true;
 };
