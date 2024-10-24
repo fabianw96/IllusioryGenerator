@@ -42,12 +42,13 @@ public:
 
 	//return view matrix from euler angles and look at matrix
 	glm::mat4 GetViewMatrix() const;
-	void ProcessKeyboardInput(camera_movement direction, float deltaTime);
-	void ProcessMouseMovement(float xOffset, float yOffset, GLboolean constrain = true);
-	void ProcessMouseScroll(float yOffset);
-	void UpdateShaderMatrix(unsigned int screenWidth, unsigned int screenHeight);
-	void SetShader(Shader* shaderProgram);
+	glm::mat4 GetProjectionmatrix(unsigned int screenWidth, unsigned int screenHeight) const;
+	void      ProcessKeyboardInput(camera_movement direction, float deltaTime);
+	void      ProcessMouseMovement(float xOffset, float yOffset, GLboolean constrain = true);
+	void      ProcessMouseScroll(float yOffset);
+	void      UpdateShaderMatrix(unsigned int screenWidth, unsigned int screenHeight);
+	void      SetShader(const std::shared_ptr<Shader>& shaderProgram);
 private:
 	void updateCameraVectors();
-	Shader* shader;
+	std::shared_ptr<Shader> shader;
 };

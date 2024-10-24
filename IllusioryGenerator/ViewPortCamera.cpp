@@ -28,6 +28,11 @@ glm::mat4 ViewPortCamera::GetViewMatrix() const
 	return glm::lookAt(Position, Position + Front, Up);
 }
 
+glm::mat4 ViewPortCamera::GetProjectionmatrix(unsigned int screenWidth, unsigned int screenHeight) const
+{
+	return glm::perspective(glm::radians(Zoom), float(screenWidth) / float(screenHeight), 0.1f, 100.0f);
+}
+
 void ViewPortCamera::ProcessKeyboardInput(camera_movement direction, float deltaTime)
 {
 	float velocity = MovementSpeed * deltaTime;
@@ -72,13 +77,12 @@ void ViewPortCamera::ProcessMouseScroll(float yOffset)
 
 void ViewPortCamera::UpdateShaderMatrix(unsigned int screenWidth, unsigned int screenHeight)
 {
-	glm::mat4 projection = glm::perspective(glm::radians(Zoom), float(screenWidth) / float(screenHeight), 0.1f, 100.0f);
 	shader->use();
 	shader->setMat4("view", GetViewMatrix());
-	shader->setMat4("projection", projection);
+	shader->setMat4("projection", GetProjectionmatrix(screenWidth, screenHeight));
 }
 
-void ViewPortCamera::SetShader(Shader* shaderProgram)
+void ViewPortCamera::SetShader(const std::shared_ptr<Shader>& shaderProgram)
 {
 	shader = shaderProgram;
 }

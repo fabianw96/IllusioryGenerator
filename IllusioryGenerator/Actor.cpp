@@ -1,13 +1,14 @@
 ﻿#include "Actor.h"
 
-#include "MeshComponent.h"
-
-
-Actor::Actor(const int& actorID, [[maybe_unused]] bool isActive)
+Actor::Actor(const int& actorID, bool isActive, const std::shared_ptr<Shader>& shader) : m_shader(shader)
 {
 	m_ActorID = actorID;
 	m_IsActive = isActive;
-	std::unique_ptr<MeshComponent> meshComponent = std::make_unique<MeshComponent>();
+}
+
+void Actor::Init()
+{
+	std::unique_ptr<MeshComponent> meshComponent = std::make_unique<MeshComponent>(m_shader);
 	this->AddComponent(std::move(meshComponent));
 }
 

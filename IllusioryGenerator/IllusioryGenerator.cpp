@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <chrono>
 
+#include "Actor.h"
 #include "Material.h"
 #include "MeshComponent.h"
 #include "ViewPortCamera.h"
@@ -38,7 +39,8 @@ bool firstMouseInput = true;
 bool isSpawnPressed = false;
 bool isDeletePressed = true;
 
-std::unique_ptr<World> world = std::make_unique<World>();
+std::shared_ptr<Shader> shaderProgram;
+std::shared_ptr<World> 	world;
 
 int main(int argc, char* argv[])
 {
@@ -60,14 +62,23 @@ int main(int argc, char* argv[])
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
-	
-	if(!gladLoadGLLoader((GLADloadproc)(glfwGetProcAddress)))
+
+	GLADloadproc gladGetProcAddress = (GLADloadproc)glfwGetProcAddress;
+
+	if(gladGetProcAddress == nullptr)
 	{
 		std::cout << "Failed to init GLAD\n";
 		return -1;
 	}
-	Shader shaderProgram("vertShader.glsl", "fragShader.glsl");
-	viewPortCam.SetShader(&shaderProgram);
+
+	if (!gladLoadGLLoader(gladGetProcAddress)) {
+		std::cerr << "Failed to initialize GLAD" << '\n';
+		return -1;
+	}
+
+	shaderProgram = std::make_shared<Shader>("vertShader.glsl", "fragShader.glsl");
+	world = std::make_shared<World>(shaderProgram);
+	viewPortCam.SetShader(shaderProgram);
 
 	glEnable(GL_DEPTH_TEST);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -166,32 +177,27 @@ int main(int argc, char* argv[])
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		shaderProgram.use();
-		glm::mat4 model = glm::mat4(1.0f);
-		glm::mat4 view = viewPortCam.GetViewMatrix();
-		glm::mat4 projection = glm::perspective(glm::radians(viewPortCam.Zoom), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
-		shaderProgram.setMat4("model", model);
-		shaderProgram.setMat4("view", view);
-		shaderProgram.setMat4("projection", projection);
+		viewPortCam.UpdateShaderMatrix(SCREEN_WIDTH, SCREEN_HEIGHT);
+		world->Update(deltaTime);
 
-		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
-		skyboxShader.use();
-		view = glm::mat4(glm::mat3(viewPortCam.GetViewMatrix())); // remove translation from the view matrix
-		skyboxShader.setMat4("view", view);
-		skyboxShader.setMat4("projection", projection);
-		// skybox cube
+		glDepthFunc(GL_LEQUAL);
+
+		// skyboxShader.use();
+		// glm::mat4 view = glm::mat4(glm::mat3(viewPortCam.GetViewMatrix()));
+		// skyboxShader.setMat4("view", view);
+		// skyboxShader.setMat4("projection", viewPortCam.GetProjectionmatrix(SCREEN_WIDTH, SCREEN_HEIGHT));
+
 		glBindVertexArray(skyboxVAO);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
-		glDepthFunc(GL_LESS); // set depth function back to default
-
-		world->Update(deltaTime);
+		glDepthFunc(GL_LESS);
 
 		//check for events, call events, swap buffers
 		glfwPollEvents();
 		glfwSwapBuffers(window);
+
 	}
 
 	glDeleteVertexArrays(1, &skyboxVAO);
@@ -232,9 +238,7 @@ void processInput(GLFWwindow* window)
 	{
 		if(!isSpawnPressed)
 		{
-			unsigned long time_since_epoch = std::chrono::system_clock::now().time_since_epoch() / std::chrono::seconds(1);
-			std::unique_ptr<Actor> newActor = std::make_unique<Actor>(time_since_epoch, true);
-			world->AddActor(std::move(newActor));
+			world->AddActor();
 			isSpawnPressed = true;
 		}
 	}

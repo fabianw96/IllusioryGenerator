@@ -1,6 +1,10 @@
 ﻿#include "World.h"
 
-World::World()
+#include <chrono>
+
+#include "Actor.h"
+
+World::World(const std::shared_ptr<Shader>& shader) : m_shader(shader)
 {
 }
 
@@ -8,13 +12,16 @@ World::~World()
 {
 }
 
-void World::AddActor(std::unique_ptr<Actor> actor)
+void World::AddActor()
 {
-	std::cout << "New Actor: " << actor << " added to World!" << "\n";
-	Actors.emplace_back(std::move(actor));
+	unsigned long time_since_epoch = std::chrono::system_clock::now().time_since_epoch() / std::chrono::seconds(1);
+	std::shared_ptr<Actor> newActor = std::make_shared<Actor>(time_since_epoch, true, m_shader);
+	Actors.emplace_back(newActor);
+	std::cout << "New Actor: " << newActor << " added to World!" << "\n";
+	newActor->Init();
 }
 
-void World::DeleteActor(std::unique_ptr<Actor> actor)
+void World::DeleteActor(std::shared_ptr<Actor> actor)
 {
 	std::cout << "Actor: " << actor << " deleted from World!" << "\n";
 	Actors.erase(std::ranges::find(Actors, actor));
