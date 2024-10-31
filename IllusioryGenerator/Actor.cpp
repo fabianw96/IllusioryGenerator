@@ -27,6 +27,7 @@ void Actor::Update(float deltaTime)
 	for(auto& component : Components)
 	{
 		component->Update(deltaTime);
+
 		if(auto meshComponent = dynamic_cast<MeshComponent*>(component.get()))
 		{
 			meshComponent->Draw();
