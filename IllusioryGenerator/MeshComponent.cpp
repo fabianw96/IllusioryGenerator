@@ -4,44 +4,67 @@
 #include <glad/glad.h>
 #include <glm/ext/matrix_transform.hpp>
 
-MeshComponent::MeshComponent(const std::shared_ptr<Shader>& shader) : m_Shader(shader)
+MeshComponent::MeshComponent(std::vector<Vertex> verts, std::vector<unsigned int> inds, std::vector<Texture> texts, const std::shared_ptr<Shader>& shader) : m_Shader(shader)
 {
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
+	vertices = verts;
+	indices = inds;
+	textures = texts;
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), static_cast<void*>(0));
-	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1,2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	MeshComponent::RenderMesh();
+	setupMesh();
 }
 
 
 MeshComponent::~MeshComponent()
 {
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
 }
 
 void MeshComponent::RenderMesh()
 {
-	//TODO: Render loop for chosen mesh.
-	std::unique_ptr<Material> meshMaterial = std::make_unique<Material>(1.0f, 0.0f, 0.0f, "./awesomeface.png", m_Shader);
+	unsigned int diffuseNr = 1;
+	unsigned int specularNr = 1;
 
-	m_Shader->use();
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-	m_Shader->setMat4("model", model);
+	for(int i = 0; i < textures.size(); i++)
+	{
+		glActiveTexture(GL_TEXTURE0 + i);
+
+		std::string number;
+		std::string name = textures[i].type;
+		if(name == "texture_diffuse")
+			number = std::to_string(diffuseNr++);
+		else if (name == "texture_specular")
+			number = std::to_string(specularNr++);
+
+		m_Shader->setInt(("material." + name + number).c_str(), i);
+		glBindTexture(GL_TEXTURE_2D, textures[i].id);
+	}
+	glActiveTexture(GL_TEXTURE0);
 
 	glBindVertexArray(VAO);
-	meshMaterial->ApplyMaterial();
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
+}
 
-	// std::cout << "Mesh Rendered!" << "\n";
+void MeshComponent::setupMesh()
+{
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+
+	glBindVertexArray(0);
 }

@@ -161,6 +161,7 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MeshComponent.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="SceneComponent.cpp" />
     <ClCompile Include="ViewPortCamera.cpp" />
     <ClCompile Include="glad.c" />
@@ -190,6 +191,7 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MeshComponent.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="Primitives.h" />
     <ClInclude Include="SceneComponent.h" />
     <ClInclude Include="ViewPortCamera.h" />
