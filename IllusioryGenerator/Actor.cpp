@@ -8,7 +8,7 @@ Actor::Actor(const int& actorID, bool isActive, const std::shared_ptr<Shader>& s
 
 void Actor::Init()
 {
-	std::unique_ptr<MeshComponent> meshComponent = std::make_unique<MeshComponent>(m_shader);
+	std::unique_ptr<MeshComponent> meshComponent = std::make_unique<MeshComponent>("./Assets/Models/backpack.obj", m_shader);
 	this->AddComponent(std::move(meshComponent));
 }
 
@@ -29,7 +29,7 @@ void Actor::Update(float deltaTime)
 		component->Update(deltaTime);
 		if(auto meshComponent = dynamic_cast<MeshComponent*>(component.get()))
 		{
-			meshComponent->RenderMesh();
+			meshComponent->Draw();
 		}
 	}
 }

@@ -161,7 +161,7 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MeshComponent.cpp" />
-    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="MeshLoader.cpp" />
     <ClCompile Include="SceneComponent.cpp" />
     <ClCompile Include="ViewPortCamera.cpp" />
     <ClCompile Include="glad.c" />
@@ -174,8 +174,6 @@
   <ItemGroup>
     <Content Include="awesomeface.png" />
     <Content Include="container.jpg" />
-    <Content Include="skyboxFragShader.glsl" />
-    <Content Include="skyboxVertShader.glsl" />
     <Content Include="skybox\back.jpg" />
     <Content Include="skybox\bottom.jpg" />
     <Content Include="skybox\front.jpg" />
@@ -191,14 +189,16 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MeshComponent.h" />
-    <ClInclude Include="Model.h" />
-    <ClInclude Include="Primitives.h" />
+    <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="SceneComponent.h" />
     <ClInclude Include="ViewPortCamera.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="World.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

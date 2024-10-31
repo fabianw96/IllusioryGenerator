@@ -1,4 +1,6 @@
-﻿#pragma once
+﻿#ifndef WORLD_H
+#define WORLD_H
+
 #include <vector>
 #include <iostream>
 
@@ -19,3 +21,5 @@ private:
 	std::vector<std::shared_ptr<Actor>> Actors;
 	std::shared_ptr<Shader> m_shader;
 };
+
+#endif

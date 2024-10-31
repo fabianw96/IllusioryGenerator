@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿#ifndef ACTOR_H
+#define ACTOR_H
 #include <iostream>
 #include <string>
 #include <vector>
@@ -22,3 +23,5 @@ protected:
 	int m_ActorID = 0;
 	bool m_IsActive = true;
 };
+
+#endif

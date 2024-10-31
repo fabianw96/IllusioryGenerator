@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿#ifndef VIEWPORT_CAMERA_H
+#define VIEWPORT_CAMERA_H
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
@@ -52,3 +53,6 @@ private:
 	void updateCameraVectors();
 	std::shared_ptr<Shader> shader;
 };
+
+
+#endif

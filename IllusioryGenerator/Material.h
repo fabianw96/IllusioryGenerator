@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿#ifndef MATERIAL_H
+#define MATERIAL_H
 #include "Shader.h"
 #include "TextureLoader.h"
 
@@ -15,3 +16,5 @@ private:
 	std::string texPath;
 	std::shared_ptr<Shader> m_Shader;
 };
+
+#endif

@@ -5,7 +5,7 @@ Material::Material(float r, float g, float b, const std::string& texturePath, st
 {
 	texPath = texturePath;
 	glGenTextures(1, &textureID);
-	TextureLoader::loadTexture(texPath.c_str());
+	// TextureLoader::loadTexture(texPath.c_str());
 	m_Shader->use();
 	m_Shader->setInt("texture1", 0);
 }

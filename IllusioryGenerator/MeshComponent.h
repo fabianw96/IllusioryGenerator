@@ -1,36 +1,34 @@
-﻿#pragma once
+﻿#ifndef MESHCOMPONENT_H
+#define MESHCOMPONENT_H
+
 #include <array>
-#include <vector>
-
 #include "Material.h"
+#include "MeshLoader.h"
 #include "SceneComponent.h"
-#include "Primitives.h"
-
-struct Vertex
-{
-	glm::vec3 Position;
-	glm::vec3 Normal;
-	glm::vec2 TexCoords;
-};
-
-struct Texture
-{
-	unsigned int id;
-	std::string type;
-};
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 class MeshComponent : public SceneComponent
 {
 public:
-	std::vector<Vertex> vertices;
-	std::vector<unsigned int> indices;
-	std::vector<Texture> textures;
+	MeshComponent(const char* path, std::shared_ptr<Shader> shader) : m_Shader(shader)
+	{
+		loadModel(path);
+	}
 
-	MeshComponent(std::vector<Vertex> verts, std::vector<unsigned int> inds, std::vector<Texture> texts, const std::shared_ptr<Shader>& shader);
-	~MeshComponent();
-	void RenderMesh();
+	std::vector<Texture> textures_loaded;
+
+	void Draw();
 private:
-	unsigned int VBO, VAO, EBO;
-	void setupMesh();
+	std::vector<MeshLoader> meshes;
+	std::string directory;
+
+	void loadModel(std::string path);
+	void processNode(aiNode *node, const aiScene *scene);
+	MeshLoader processMesh(aiMesh *mesh, const aiScene *scene);
+	std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
 	std::shared_ptr<Shader> m_Shader;
 };
+
+#endif

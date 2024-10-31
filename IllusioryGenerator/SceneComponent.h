@@ -1,5 +1,7 @@
-﻿#pragma once
+﻿#ifndef SCENECOMPONENT_H
+#define SCENECOMPONENT_H
 #include <glm/glm.hpp>
+#include <iostream>
 
 class SceneComponent
 {
@@ -16,3 +18,5 @@ public:
 protected:
 	glm::vec3 Position;
 };
+
+#endif
