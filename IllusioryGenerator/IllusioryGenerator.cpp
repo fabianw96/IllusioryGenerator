@@ -1,35 +1,16 @@
-#include <iostream>
-#include <glad/glad.h>
-#include <glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <chrono>
-
-#include "Actor.h"
-#include "Material.h"
-#include "MeshComponent.h"
-#include "ViewPortCamera.h"
-#include "Shader.h"
-#include "stb_image.h"
-#include "TextureLoader.h"
-#include "World.h"
+#include "IllusioryGenerator.h"
 
 //Settings
-constexpr unsigned int SCREEN_WIDTH = 800;
-constexpr unsigned int SCREEN_HEIGHT = 600;
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window);
-void mouse_callback(GLFWwindow* window, double xPos, double yPos);
-void scroll_callback(GLFWwindow* window, double xOffset, double yOffset);
+constexpr unsigned int SCREEN_WIDTH = 1920;
+constexpr unsigned int SCREEN_HEIGHT = 1080;
 
 //timings
 float deltaTime = 0;
 float lastFrameTime = 0;
 
 //camera
-ViewPortCamera viewPortCam(glm::vec3(0.0f, 0.0f, 3.0f));
+// ViewPortCamera viewPortCam(glm::vec3(0.0f, 0.0f, 3.0f));
+std::shared_ptr<ViewPortCamera> viewPortCamera;
 float lastX = SCREEN_WIDTH / 2.0f;
 float lastY = SCREEN_HEIGHT / 2.0f;
 bool firstMouseInput = true;
@@ -40,6 +21,11 @@ bool isDeletePressed = true;
 
 std::shared_ptr<Shader> shaderProgram;
 std::shared_ptr<World> 	world;
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void processInput(GLFWwindow* window);
+void mouse_callback(GLFWwindow* window, double xPos, double yPos);
+void scroll_callback(GLFWwindow* window, double xOffset, double yOffset);
 
 int main(int argc, char* argv[])
 {
@@ -75,9 +61,10 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
+	viewPortCamera = std::make_shared<ViewPortCamera>(glm::vec3(0.0f, 0.0f, 3.0f));
 	shaderProgram = std::make_shared<Shader>("vertShader.glsl", "fragShader.glsl");
-	world = std::make_shared<World>(shaderProgram);
-	viewPortCam.SetShader(shaderProgram);
+	world = std::make_shared<World>(viewPortCamera,shaderProgram);
+	viewPortCamera->SetShader(shaderProgram);
 
 	glEnable(GL_DEPTH_TEST);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -87,9 +74,9 @@ int main(int argc, char* argv[])
 	while(!glfwWindowShouldClose(window))
 	{
 		//frame time logic
-		float currentframe = static_cast<float>(glfwGetTime());
-		deltaTime = currentframe - lastFrameTime;
-		lastFrameTime = currentframe;
+		float currentFrame = static_cast<float>(glfwGetTime());
+		deltaTime = currentFrame - lastFrameTime;
+		lastFrameTime = currentFrame;
 
 		//input processing
 		processInput(window);
@@ -98,13 +85,8 @@ int main(int argc, char* argv[])
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//TODO: Move to camera class
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-		shaderProgram->setMat4("model", model);
+		viewPortCamera->UpdateShaderMatrix(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-		viewPortCam.UpdateShaderMatrix(SCREEN_WIDTH, SCREEN_HEIGHT);
 		world->Update(deltaTime);
 
 		//check for events, call events, swap buffers
@@ -127,16 +109,16 @@ void processInput(GLFWwindow* window)
 		glfwSetWindowShouldClose(window,true);
 
 	if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		viewPortCam.ProcessKeyboardInput(FORWARD, deltaTime);
+		viewPortCamera->ProcessKeyboardInput(FORWARD, deltaTime);
 
 	if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		viewPortCam.ProcessKeyboardInput(BACKWARD, deltaTime);
+		viewPortCamera->ProcessKeyboardInput(BACKWARD, deltaTime);
 
 	if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		viewPortCam.ProcessKeyboardInput(LEFT, deltaTime);
+		viewPortCamera->ProcessKeyboardInput(LEFT, deltaTime);
 
 	if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		viewPortCam.ProcessKeyboardInput(RIGHT, deltaTime);
+		viewPortCamera->ProcessKeyboardInput(RIGHT, deltaTime);
 
 	if(glfwGetKey(window, GLFW_MOUSE_BUTTON_RIGHT == GLFW_PRESS))
 	{
@@ -147,7 +129,15 @@ void processInput(GLFWwindow* window)
 	{
 		if(!isSpawnPressed)
 		{
-			world->AddActor();
+			world->AddActor(OT_BACKPACK);
+			isSpawnPressed = true;
+		}
+	}
+	else if(glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+	{
+		if(!isSpawnPressed)
+		{
+			world->AddActor(OT_CUBE);
 			isSpawnPressed = true;
 		}
 	}
@@ -161,7 +151,7 @@ void processInput(GLFWwindow* window)
 	// {
 	// 	if(!isDeletePressed)
 	// 	{
-	// 		world->DeleteActor(newActor);
+	// 		world->DeleteActor();
 	// 		isDeletePressed = true;
 	// 	}
 	// }
@@ -189,10 +179,10 @@ void mouse_callback(GLFWwindow* window, double xPosIn, double yPosIn)
 	lastX = xPos;
 	lastY = yPos;
 
-	viewPortCam.ProcessMouseMovement(xOffset, yOffset);
+	viewPortCamera->ProcessMouseMovement(xOffset, yOffset);
 }
 
 void scroll_callback(GLFWwindow* window, double xOffset, double yOffset)
 {
-	viewPortCam.ProcessMouseScroll(static_cast<float>(yOffset));
+	viewPortCamera->ProcessMouseScroll(static_cast<float>(yOffset));
 }

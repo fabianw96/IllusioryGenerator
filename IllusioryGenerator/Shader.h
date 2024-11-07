@@ -10,7 +10,7 @@
 class Shader
 {
 public:
-	unsigned int ID;
+	unsigned int m_ID;
 
 	Shader(const char* vertexPath, const char* fragmentPath);
 

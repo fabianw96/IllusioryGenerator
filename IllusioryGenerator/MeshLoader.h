@@ -33,17 +33,17 @@ struct Texture
 class MeshLoader
 {
 public:
-	std::vector<Vertex> vertices;
-	std::vector<unsigned int> indices;
-	std::vector<Texture> textures;
+	std::vector<Vertex> m_vertices;
+	std::vector<unsigned int> m_indices;
+	std::vector<Texture> m_textures;
 
 	MeshLoader(std::vector<Vertex> verts, std::vector<unsigned int> inds, std::vector<Texture> texts, const std::shared_ptr<Shader>& shader);
 	~MeshLoader();
 	void RenderMesh();
 private:
-	unsigned int            VBO, VAO, EBO;
-	void                    setupMesh();
+	unsigned int            m_VBO, m_VAO, m_EBO;
 	std::shared_ptr<Shader> m_Shader;
+	void                    setupMesh();
 
 };
 

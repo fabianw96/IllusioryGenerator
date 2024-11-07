@@ -1,8 +1,9 @@
 ﻿#include "SceneComponent.h"
 
+
 SceneComponent::SceneComponent()
 {
-	Position = glm::vec3(0.0f, 0.0f, 0.0f);
+	m_position = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 SceneComponent::~SceneComponent()
@@ -19,10 +20,10 @@ void SceneComponent::Render()
 
 glm::vec3 SceneComponent::GetPosition() const
 {
-	return Position;
+	return m_position;
 }
 
 void SceneComponent::SetPosition(const glm::vec3& position)
 {
-	Position = position;
+	m_position = position;
 }

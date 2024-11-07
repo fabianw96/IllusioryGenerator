@@ -6,9 +6,9 @@
 
 void MeshComponent::Draw()
 {
-	for(unsigned int i = 0; i < meshes.size(); ++i)
+	for(unsigned int i = 0; i < m_meshes.size(); ++i)
 	{
-		meshes[i].RenderMesh();
+		m_meshes[i].RenderMesh();
 	}
 }
 
@@ -22,7 +22,9 @@ void MeshComponent::loadModel(std::string path)
 		std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << "\n";
 		return;
 	}
-	directory = path.substr(0, path.find_last_of('/'));
+	std::cout << "Loading model..." << "\n";
+
+	m_directory = path.substr(0, path.find_last_of('/'));
 
 	processNode(scene->mRootNode, scene);
 }
@@ -32,7 +34,7 @@ void MeshComponent::processNode(aiNode* node, const aiScene* scene)
 	for(unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-		meshes.push_back(processMesh(mesh, scene));
+		m_meshes.push_back(processMesh(mesh, scene));
 	}
 
 	for(unsigned int i = 0; i < node->mNumChildren; i++)
@@ -40,7 +42,6 @@ void MeshComponent::processNode(aiNode* node, const aiScene* scene)
 		processNode(node->mChildren[i], scene);
 	}
 }
-
 MeshLoader MeshComponent::processMesh(aiMesh* mesh, const aiScene* scene)
 {
 	std::vector<Vertex> vertices;
@@ -100,6 +101,8 @@ MeshLoader MeshComponent::processMesh(aiMesh* mesh, const aiScene* scene)
 
 	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
+	std::cout << material->GetName().C_Str();
+
 	std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
@@ -123,12 +126,13 @@ std::vector<Texture> MeshComponent::loadMaterialTextures(aiMaterial* mat, aiText
 	{
 		aiString str;
 		mat->GetTexture(type, i, &str);
+		// std::cout << mat->GetTextureCount(type) << " : " << str.C_Str();
 		bool skip = false;
-		for(int j = 0; j < textures_loaded.size(); j++)
+		for(int j = 0; j < m_textures_loaded.size(); j++)
 		{
-			if(std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0)
+			if(std::strcmp(m_textures_loaded[j].path.data(), str.C_Str()) == 0)
 			{
-				textures.push_back(textures_loaded[j]);
+				textures.push_back(m_textures_loaded[j]);
 				skip = true;
 				break;
 			}
@@ -137,11 +141,11 @@ std::vector<Texture> MeshComponent::loadMaterialTextures(aiMaterial* mat, aiText
 		if(!skip)
 		{
 			Texture texture;
-			texture.id = TextureLoader::loadTexture(str.C_Str(), directory);
+			texture.id = TextureLoader::loadTexture(str.C_Str(), m_directory);
 			texture.type = typeName;
 			texture.path = str.C_Str();
 			textures.push_back(texture);
-			textures_loaded.push_back(texture);
+			m_textures_loaded.push_back(texture);
 		}
 	}
 

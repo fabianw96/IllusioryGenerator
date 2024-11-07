@@ -17,18 +17,18 @@ public:
 		loadModel(path);
 	}
 
-	std::vector<Texture> textures_loaded;
+	std::vector<Texture> m_textures_loaded;
 
 	void Draw();
 private:
-	std::vector<MeshLoader> meshes;
-	std::string directory;
+	std::vector<MeshLoader> m_meshes;
+	std::string m_directory;
+	std::shared_ptr<Shader> m_Shader;
 
 	void loadModel(std::string path);
 	void processNode(aiNode *node, const aiScene *scene);
 	MeshLoader processMesh(aiMesh *mesh, const aiScene *scene);
 	std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
-	std::shared_ptr<Shader> m_Shader;
 };
 
 #endif

@@ -159,6 +159,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="LightComponent.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MeshComponent.cpp" />
     <ClCompile Include="MeshLoader.cpp" />
@@ -187,9 +188,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="IllusioryGenerator.h" />
+    <ClInclude Include="LightComponent.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MeshComponent.h" />
     <ClInclude Include="MeshLoader.h" />
+    <ClInclude Include="ObjectTypes.h" />
     <ClInclude Include="SceneComponent.h" />
     <ClInclude Include="ViewPortCamera.h" />
     <ClInclude Include="Shader.h" />

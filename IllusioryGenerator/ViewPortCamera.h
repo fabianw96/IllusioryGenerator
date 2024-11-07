@@ -22,18 +22,18 @@ constexpr float ZOOM = 90.0f;
 class ViewPortCamera
 {
 public:
-	glm::vec3 Position;
-	glm::vec3 Front;
-	glm::vec3 Up;
-	glm::vec3 Right;
-	glm::vec3 WorldUp;
+	glm::vec3 m_position;
+	glm::vec3 m_front;
+	glm::vec3 m_up;
+	glm::vec3 m_right;
+	glm::vec3 m_worldUp;
 
-	float Yaw;
-	float Pitch;
+	float m_yaw;
+	float m_pitch;
 
-	float MovementSpeed;
-	float MouseSensitivity;
-	float Zoom;
+	float m_movementSpeed;
+	float m_mouseSensitivity;
+	float m_zoom;
 
 	//Vector constructor
 	ViewPortCamera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
@@ -44,14 +44,17 @@ public:
 	//return view matrix from euler angles and look at matrix
 	glm::mat4 GetViewMatrix() const;
 	glm::mat4 GetProjectionmatrix(unsigned int screenWidth, unsigned int screenHeight) const;
+	glm::mat4 SetModelMatrix() const;
+	glm::vec3 GetPosition() const;
+	glm::vec3 GetFront() const;
 	void      ProcessKeyboardInput(camera_movement direction, float deltaTime);
 	void      ProcessMouseMovement(float xOffset, float yOffset, GLboolean constrain = true);
 	void      ProcessMouseScroll(float yOffset);
 	void      UpdateShaderMatrix(unsigned int screenWidth, unsigned int screenHeight);
 	void      SetShader(const std::shared_ptr<Shader>& shaderProgram);
 private:
-	void updateCameraVectors();
-	std::shared_ptr<Shader> shader;
+	void UpdateCameraVectors();
+	std::shared_ptr<Shader> m_shader;
 };
 
 

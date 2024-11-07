@@ -11,9 +11,9 @@ public:
 	void ApplyMaterial();
 
 private:
-	float red, green, blue;
-	unsigned int textureID;
-	std::string texPath;
+	float m_red, m_green, m_blue;
+	unsigned int m_textureID;
+	std::string m_texPath;
 	std::shared_ptr<Shader> m_Shader;
 };
 
