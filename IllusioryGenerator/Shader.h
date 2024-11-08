@@ -1,20 +1,16 @@
 ﻿#ifndef SHADER_H
 #define SHADER_H
-
 #include <glad/glad.h>
-
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <glm/glm.hpp>
 
-
-
 class Shader
 {
 public:
-	unsigned int ID;
+	unsigned int m_ID;
 
 	Shader(const char* vertexPath, const char* fragmentPath);
 

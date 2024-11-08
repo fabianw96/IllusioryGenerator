@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿#ifndef TEXTURE_LOADER
+#define TEXTURE_LOADER
 
 #include "stb_image.h"
 #include <iostream>
@@ -7,5 +8,7 @@
 class TextureLoader
 {
 public:
-	static void loadTexture(char const* file, unsigned int texture);
+	static unsigned int loadTexture(char const* path, const std::string &directory);
 };
+
+#endif
