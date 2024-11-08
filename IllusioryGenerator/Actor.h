@@ -5,6 +5,7 @@
 #include <vector>
 #include "SceneComponent.h"
 #include "MeshComponent.h"
+#include "LightComponent.h"
 #include "ObjectTypes.h"
 #include "World.h"
 
@@ -23,6 +24,9 @@ protected:
 	std::shared_ptr<Shader> m_shader;
 	int m_ActorID = 0;
 	bool m_IsActive = true;
+
+private:
+	int m_numLights = 0;
 };
 
 #endif

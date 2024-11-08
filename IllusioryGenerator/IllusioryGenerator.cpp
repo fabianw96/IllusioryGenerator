@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
 		processInput(window);
 
 		//rendering
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		viewPortCamera->UpdateShaderMatrix(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -125,7 +125,7 @@ void processInput(GLFWwindow* window)
 		glfwSetCursorPosCallback(window, mouse_callback);
 	}
 
-	if(glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+	if(glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
 	{
 		if(!isSpawnPressed)
 		{
@@ -133,11 +133,19 @@ void processInput(GLFWwindow* window)
 			isSpawnPressed = true;
 		}
 	}
-	else if(glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+	else if(glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
 	{
 		if(!isSpawnPressed)
 		{
 			world->AddActor(OT_CUBE);
+			isSpawnPressed = true;
+		}
+	}
+	else if(glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+	{
+		if(!isSpawnPressed)
+		{
+			world->AddActor(OT_LIGHT);
 			isSpawnPressed = true;
 		}
 	}

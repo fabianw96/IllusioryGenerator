@@ -15,10 +15,11 @@ public:
 	virtual void Render();
 
 	glm::vec3 GetPosition() const;
-	void SetPosition(const glm::vec3& position);
+	virtual void SetPositionAndScale(const std::shared_ptr<ViewPortCamera>& viewPortCamera, glm::vec3 scale);
 
 protected:
 	glm::vec3 m_position;
+	glm::vec3 m_scale;
 };
 
 #endif

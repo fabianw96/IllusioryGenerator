@@ -1,8 +1,5 @@
 ﻿#include "World.h"
 
-#include <chrono>
-
-#include "Actor.h"
 
 World::World(const std::shared_ptr<ViewPortCamera>& viewPortCamera, const std::shared_ptr<Shader>& shader) : m_shader(shader), m_viewPortCamera(viewPortCamera)
 {

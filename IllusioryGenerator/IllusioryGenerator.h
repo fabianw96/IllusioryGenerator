@@ -10,7 +10,6 @@
 #include <chrono>
 
 #include "Actor.h"
-#include "Material.h"
 #include "MeshComponent.h"
 #include "ViewPortCamera.h"
 #include "Shader.h"

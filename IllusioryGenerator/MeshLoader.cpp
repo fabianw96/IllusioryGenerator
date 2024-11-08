@@ -1,10 +1,12 @@
 ﻿#include "MeshLoader.h"
 
+#include <utility>
+
 MeshLoader::MeshLoader(std::vector<Vertex> verts, std::vector<unsigned int> inds, std::vector<Texture> texts, const std::shared_ptr<Shader>& shader) : m_Shader(shader)
 {
-	m_vertices = verts;
-	m_indices = inds;
-	m_textures = texts;
+	m_vertices = std::move(verts);
+	m_indices = std::move(inds);
+	m_textures = std::move(texts);
 
 	setupMesh();
 }

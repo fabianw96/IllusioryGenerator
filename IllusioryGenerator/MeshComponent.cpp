@@ -1,13 +1,17 @@
 ﻿#include "MeshComponent.h"
-#include <iostream>
-#include <memory>
-#include <glad/glad.h>
-#include <glm/ext/matrix_transform.hpp>
+
 
 void MeshComponent::Draw()
 {
 	for(unsigned int i = 0; i < m_meshes.size(); ++i)
 	{
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, m_position);
+		model = glm::scale(model, m_scale);
+
+		m_Shader->use();
+		m_Shader->setMat4("model", model);
+
 		m_meshes[i].RenderMesh();
 	}
 }
@@ -101,8 +105,6 @@ MeshLoader MeshComponent::processMesh(aiMesh* mesh, const aiScene* scene)
 
 	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-	std::cout << material->GetName().C_Str();
-
 	std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
@@ -116,7 +118,6 @@ MeshLoader MeshComponent::processMesh(aiMesh* mesh, const aiScene* scene)
 	textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
 	return MeshLoader(vertices, indices, textures, m_Shader);
-
 }
 
 std::vector<Texture> MeshComponent::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
@@ -151,3 +152,12 @@ std::vector<Texture> MeshComponent::loadMaterialTextures(aiMaterial* mat, aiText
 
 	return textures;
 }
+
+void MeshComponent::SetPositionAndScale(const std::shared_ptr<ViewPortCamera>& viewPortCamera, glm::vec3 scale)
+{
+	glm::vec3 spawnPosition = viewPortCamera->GetPosition() + viewPortCamera->GetFront() * 5.0f;
+	m_scale = scale;
+	m_position = spawnPosition;
+}
+
+

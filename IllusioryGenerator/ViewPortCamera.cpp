@@ -1,7 +1,5 @@
 ﻿#include "ViewPortCamera.h"
 
-#include <iostream>
-#include <glm/ext/matrix_clip_space.hpp>
 
 ViewPortCamera::ViewPortCamera(glm::vec3 position, glm::vec3 up, float yaw, float pitch) : m_front(glm::vec3(0.0f, 0.0f, -1.0)), m_movementSpeed(SPEED), m_mouseSensitivity(SENSITIVITY), m_zoom(ZOOM)
 {
@@ -36,7 +34,7 @@ glm::mat4 ViewPortCamera::GetProjectionmatrix(unsigned int screenWidth, unsigned
 glm::mat4 ViewPortCamera::SetModelMatrix() const
 {
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+	model = glm::translate(model, m_spawnPosition);
 	model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 
@@ -101,6 +99,7 @@ void ViewPortCamera::UpdateShaderMatrix(unsigned int screenWidth, unsigned int s
 	m_shader->setMat4("view", GetViewMatrix());
 	m_shader->setMat4("projection", GetProjectionmatrix(screenWidth, screenHeight));
 	m_shader->setMat4("model", SetModelMatrix());
+	m_shader->setVec3("viewPos", GetPosition());
 }
 
 

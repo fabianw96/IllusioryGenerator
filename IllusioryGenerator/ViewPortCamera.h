@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include "Shader.h"
+#include <iostream>
+#include <glm/ext/matrix_clip_space.hpp>
 
 enum camera_movement
 {
@@ -34,6 +36,8 @@ public:
 	float m_movementSpeed;
 	float m_mouseSensitivity;
 	float m_zoom;
+
+	glm::vec3 m_spawnPosition;
 
 	//Vector constructor
 	ViewPortCamera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
